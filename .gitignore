@@ -1,6 +1,7 @@
 *.class
 
-
+#ignore intellij folder
+/.idea
 #ignore maven target folder
 /target
 
