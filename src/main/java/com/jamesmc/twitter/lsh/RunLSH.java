@@ -2,13 +2,10 @@ package com.jamesmc.twitter.lsh;
 
 import com.jamesmc.twitter.lsh.index.Tweet;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -38,10 +35,7 @@ public class RunLSH {
 	private final LinkedBlockingQueue<SortedCollisionsList> sortedCollisions = new LinkedBlockingQueue<SortedCollisionsList>(500);
 	private final LinkedBlockingQueue<Pair<Tweet, Tweet>> databaseInput = new LinkedBlockingQueue<Pair<Tweet, Tweet>>(500);
 
-	private final Thread findCollisions;
-	private final Thread sortCollisons;
-	private final Thread nearestNeighbour;
-	private final Thread databaseQueue;
+	private final Thread findCollisions, sortCollisons, nearestNeighbour, databaseQueue;
 
 	@SuppressWarnings("unchecked")
 	public RunLSH() {
@@ -87,17 +81,18 @@ public class RunLSH {
 		databaseQueue.start();
 		System.out.println("..........DONE");
 
+	}
+	public void cluster(Reader inputStreamReader){
 
 		try {
-			BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
+			BufferedReader f = new BufferedReader(inputStreamReader);
 			DateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy");
 
 			int count = 0;
 
-			String x = null;
+			String x;
 			//take a json object from the inputstream
 
-			System.out.println("Reading from standard output");
 			while( (x = f.readLine()) != null )
 			{
 				Map<String, Object> status;
@@ -152,7 +147,31 @@ public class RunLSH {
 	}
 
 	public static void main(String[] args) {
-		new RunLSH();
+
+		RunLSH lsh = new RunLSH();
+
+
+		try{
+			if(args[0].equals("--file")){//use a file
+				try {
+					System.out.println("Clustering tweets from file");
+					lsh.cluster(new FileReader(args[1]));
+				} catch(FileNotFoundException e) {
+					System.out.print("ERROR: File not found!");
+				}
+			}
+
+			if(args[0].equals("--stream")){ //read from so
+
+				System.out.println("Clustering tweets from standard input");
+				lsh.cluster(new InputStreamReader(System.in));
+			}
+
+
+		}catch(ArrayIndexOutOfBoundsException exception){
+			System.out.println("ERROR: incorrect usage, must specify input source");
+		}
+
 	}
 
 }
