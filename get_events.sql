@@ -4,7 +4,7 @@ FROM
 	(SELECT
 		thread,
 		number_users,
-		entropy(thread, maxid, 'LSH1') as entropy,
+		entropy(thread, maxid, 'LSH-final-3') as entropy,
 		maxid
 	FROM
 		(SELECT max(id) as maxid,

@@ -106,9 +106,11 @@ public class RunLSH {
 					Map<String, Object> user = (Map<String, Object>) status.get("user");
 					long userId = (Long) user.get("id");
 
-					boolean isRetweet = (Boolean) status.get("retweeted");
-					if (isRetweet || text.startsWith("RT"))
+
+					//ignore retweets
+					if(status.get("retweeted_status") != null || status.get("quoted_status") != null)
 						continue;
+
 
 					try {
 						Date date = formatter.parse((String) status.get("created_at"));
@@ -132,10 +134,13 @@ public class RunLSH {
 					// thing.
 					try {
 						this.streamInput.put(t);
-						System.out.println("Added tweet to input Queue");
 					} catch (InterruptedException e) {e.printStackTrace();}
 
-				} catch (ParseException e) {e.printStackTrace();}
+				} catch (ParseException e) {
+					System.out.println("-------------------------------------------Unparsable Line!-------------------------------------------");
+					System.out.println(x);
+					System.out.println("------------------------------------------------------------------------------------------------------");
+				}
 			}
 
 

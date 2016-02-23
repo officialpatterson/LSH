@@ -7,7 +7,7 @@ import com.jamesmc.twitter.lsh.utils.Config;
 
 public class Tweet extends Document {
 
-	private int threadId = -1;
+	private long threadId = -1;
 
 	private AdditionalInformation additionalInfo;
 
@@ -19,11 +19,11 @@ public class Tweet extends Document {
 		this.additionalInfo = new AdditionalInformation(userId, creationTime, document);
 	}
 
-	public int getThread() {
+	public long getThread() {
 		return this.threadId;
 	}
 
-	public void setThread(int threadId) {
+	public void setThread(long threadId) {
 		this.threadId = threadId;
 	}
 

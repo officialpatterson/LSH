@@ -1,21 +1,23 @@
 package com.jamesmc.twitter.lsh.index;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
 
 public class Index {
 	private final TObjectIntHashMap<String> index = new TObjectIntHashMap<String>();
-	private final AtomicInteger threadCounter = new AtomicInteger(0);
+	private final AtomicLong threadCounter = new AtomicLong(0);
 	
-	public Index() {	
+	public Index() {
+		threadCounter.set(System.currentTimeMillis());
 	}
+
 	
-	public int getThreadCount() {
+	public long getThreadCount() {
 		return this.threadCounter.intValue();
 	}
 	
-	public int incrementThread() {
+	public long incrementThread() {
 		return this.threadCounter.incrementAndGet();
 	}
 	
